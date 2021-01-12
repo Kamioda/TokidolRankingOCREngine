@@ -1,0 +1,14 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: yumetodo/tesseract_opencv:v1.0.2-opencv-tesseract-4.5.1-1
+    steps:
+      - checkout
+      - run: cmake -B build .
+      - run: cmake --build build -j 2
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
