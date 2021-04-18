@@ -27,22 +27,29 @@ inline void RunOCR(const httplib::Request& req, httplib::Response& res) { Proces
 inline bool CommandLineIsMatch(const std::string& arg, const std::string& comp) { return arg == comp; }
 
 int main(int argc, char* argv[]) {
-	if (argc != 2) return 0;
-	if (CommandLineIsMatch(argv[1], "--start") || CommandLineIsMatch(argv[1], "-s")) {
-		try {
+	try {
+		if (argc > 2) throw std::runtime_error("command line arg is invalid");
+		unsigned short listenPort = port;
+		if ((CommandLineIsMatch(argv[2], "--port") || CommandLineIsMatch(argv[2], "-p")) && argc >= 4) listenPort = static_cast<unsigned short>(std::stoul(argv[3]));
+		if (CommandLineIsMatch(argv[1], "--start") || CommandLineIsMatch(argv[1], "-s")) {
 			httplib::Server server{};
 			server.Post("/trim", RunTrim);
 			server.Post("/ocr", RunOCR);
 			server.Get("/stop", [&server](const httplib::Request&, httplib::Response&) { server.stop(); });
-			server.listen("localhost", port);
+			server.listen("localhost", listenPort);
 		}
-		catch (const std::exception& er) {
-			std::cerr << er.what() << std::endl;
+		else if (CommandLineIsMatch(argv[1], "--terminate") || CommandLineIsMatch(argv[1], "-t")) {
+			httplib::Client client("localhost", listenPort);
+			client.Get("/stop");
 		}
 	}
-	else if (CommandLineIsMatch(argv[1], "--terminate") || CommandLineIsMatch(argv[1], "-t")) {
-		httplib::Client client("localhost", port);
-		client.Get("/stop");
+	catch (const std::exception& er) {
+		std::cerr << er.what() << std::endl << std::endl;
+		std::cout << "------------Tokimeki Idol Score Ranking OCR Engine------------" << std::endl;
+		std::cout << "tokidolocreng [--start|-s|--terminate|-t] --port [listen port]" << std::endl << std::endl;
+		std::cout << "--start -s            Start OCR Server" << std::endl;
+		std::cout << "--terminate -t        Terminate OCR Server" << std::endl;
+		std::cout << "--port [listen port]  (option)Reserve server listen port" << std::endl;
 	}
 	return 0;
 }
