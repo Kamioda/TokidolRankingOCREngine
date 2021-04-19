@@ -36,12 +36,15 @@ int main(int argc, char* argv[]) {
 			server.Post("/trim", RunTrim);
 			server.Post("/ocr", RunOCR);
 			server.Get("/stop", [&server](const httplib::Request&, httplib::Response&) { server.stop(); });
+			std::cout << "Start Server" << std::endl;
+			std::cout << "port: " << listenPort << std::endl;
 			server.listen("localhost", listenPort);
 		}
 		else if (CommandLineIsMatch(argv[1], "--terminate") || CommandLineIsMatch(argv[1], "-t")) {
 			httplib::Client client("localhost", listenPort);
 			client.set_connection_timeout(0, 100000);
 			client.Get("/stop");
+			std::cout << "Send terminate request!" << std::endl;
 		}
 	}
 	catch (const std::exception& er) {
