@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
 	try {
 		if (argc < 2) throw std::runtime_error("command line arg is invalid");
 		unsigned short listenPort = port;
-		if ((CommandLineIsMatch(argv[2], "--port") || CommandLineIsMatch(argv[2], "-p")) && argc >= 4) listenPort = static_cast<unsigned short>(std::stoul(argv[3]));
+		if (argc > 4 && (CommandLineIsMatch(argv[2], "--port") || CommandLineIsMatch(argv[2], "-p"))) listenPort = static_cast<unsigned short>(std::stoul(argv[3]));
 		if (CommandLineIsMatch(argv[1], "--start") || CommandLineIsMatch(argv[1], "-s")) {
 			httplib::Server server{};
 			server.Post("/trim", RunTrim);
