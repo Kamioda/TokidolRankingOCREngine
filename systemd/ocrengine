@@ -1,10 +1,11 @@
 [Unit]
 Description=Tokimeki Idol Score Ranking OCR Server
+After=tokidolrankingapi.service
 
 [Service]
 Type=simple
-ExecStart=/usr/local/TokidolRankingOCREngine/tokidolocreng --start
-ExecStop=/usr/local/TokidolRankingOCREngine/tokidolocreng --terminate
+ExecStart=/usr/local/TokidolRankingOCREngine/ocreng
+ExecStop=/usr/local/TokidolRankingOCREngine/stoptool
 Restart=always
 
 [Install]
