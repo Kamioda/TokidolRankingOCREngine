@@ -51,7 +51,6 @@ int main(int argc, char* argv[]) {
 		}
 		else if (CommandLineIsMatch(argv[1], "--terminate") || CommandLineIsMatch(argv[1], "-t")) {
 			httplib::Client client("localhost", listenPort);
-			client.set_connection_timeout(0, 100000);
 			auto res = client.Get("/stop");
 			if (res->status != 200) throw std::runtime_error(res->body);
 			std::cout << "Send terminate request!" << std::endl;
