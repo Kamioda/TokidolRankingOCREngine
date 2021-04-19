@@ -40,6 +40,7 @@ int main(int argc, char* argv[]) {
 		}
 		else if (CommandLineIsMatch(argv[1], "--terminate") || CommandLineIsMatch(argv[1], "-t")) {
 			httplib::Client client("localhost", listenPort);
+			client.set_connection_timeout(100);
 			client.Get("/stop");
 		}
 	}
