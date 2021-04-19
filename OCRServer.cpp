@@ -28,34 +28,24 @@ inline bool CommandLineIsMatch(const std::string& arg, const std::string& comp) 
 
 int main(int argc, char* argv[]) {
 	try {
-		if (argc < 2) throw std::runtime_error("command line arg is invalid");
 		unsigned short listenPort = port;
-		if (argc > 4 && (CommandLineIsMatch(argv[2], "--port") || CommandLineIsMatch(argv[2], "-p"))) listenPort = static_cast<unsigned short>(std::stoul(argv[3]));
-		if (CommandLineIsMatch(argv[1], "--start") || CommandLineIsMatch(argv[1], "-s")) {
-			httplib::Server server{};
-			static bool StopRequestIsReceived = false;
-			server.Post("/trim", RunTrim);
-			server.Post("/ocr", RunOCR);
-			server.Get("/stop", [](const httplib::Request&, httplib::Response&) { StopRequestIsReceived = true; });
-			std::cout << "Start Server" << std::endl;
-			std::cout << "port: " << listenPort << std::endl;
-			server.listen("localhost", listenPort, 0, 
-				[&server]() {
-					if (StopRequestIsReceived) {
-						std::chrono::milliseconds interval(1000);
-						std::this_thread::sleep_for(interval);
-						server.stop();
-					}
+		if (argc >= 3 && (CommandLineIsMatch(argv[1], "--port") || CommandLineIsMatch(argv[1], "-p"))) listenPort = static_cast<unsigned short>(std::stoul(argv[2]));
+		httplib::Server server{};
+		static bool StopRequestIsReceived = false;
+		server.Post("/trim", RunTrim);
+		server.Post("/ocr", RunOCR);
+		server.Get("/stop", [](const httplib::Request&, httplib::Response&) { StopRequestIsReceived = true; });
+		std::cout << "Start Server" << std::endl;
+		std::cout << "port: " << listenPort << std::endl;
+		server.listen("localhost", listenPort, 0, 
+			[&server]() {
+				if (StopRequestIsReceived) {
+					std::chrono::milliseconds interval(1000);
+					std::this_thread::sleep_for(interval);
+					server.stop();
 				}
-			);
-		}
-		else if (CommandLineIsMatch(argv[1], "--terminate") || CommandLineIsMatch(argv[1], "-t")) {
-			httplib::Client client("localhost", listenPort);
-			auto res = client.Get("/stop");
-			if (res->status != 200) throw std::runtime_error(res->body);
-			std::cout << "Send terminate request!" << std::endl;
-			client.stop();
-		}
+			}
+		);
 	}
 	catch (const std::exception& er) {
 		std::cerr << er.what() << std::endl << std::endl;
