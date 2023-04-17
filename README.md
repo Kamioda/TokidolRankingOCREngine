@@ -1,6 +1,6 @@
 # Tokimeki Idol Score Ranking OCR Engine
 
-[![CircleCI](https://circleci.com/gh/AinoMegumi/TokidolRankingOCREngine.svg?style=svg)](https://circleci.com/gh/AinoMegumi/TokidolRankingOCREngine)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/Kamioda/TokidolRankingOCREngine/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/Kamioda/TokidolRankingOCREngine/tree/main)
 
 ## Build
 
