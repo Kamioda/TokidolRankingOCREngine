@@ -3,7 +3,7 @@
 #include "OCR/OCRMain.hpp"
 #include <httplib.h>
 #include <iostream>
-constexpr unsigned short port = 40;
+constexpr unsigned short defaultPort = 40;
 
 inline void Process(const httplib::Request& req, httplib::Response& res, const std::function<std::string(const std::string&)>& ProcessFunc) {
 	try {
@@ -28,8 +28,9 @@ inline bool CommandLineIsMatch(const std::string& arg, const std::string& comp) 
 
 int main(int argc, char* argv[]) {
 	try {
-		unsigned short listenPort = port;
-		if (argc >= 3 && (CommandLineIsMatch(argv[1], "--port") || CommandLineIsMatch(argv[1], "-p"))) listenPort = static_cast<unsigned short>(std::stoul(argv[2]));
+		const unsigned short listenPort = (argc >= 3 && (CommandLineIsMatch(argv[1], "--port") || CommandLineIsMatch(argv[1], "-p"))) 
+			? static_cast<unsigned short>(std::stoul(argv[2]))
+			: defaultPort;
 		httplib::Server server{};
 		static bool StopRequestIsReceived = false;
 		server.Post("/trim", RunTrim);
