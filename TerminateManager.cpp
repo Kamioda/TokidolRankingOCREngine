@@ -1,13 +1,14 @@
 #include <httplib.h>
 #include <iostream>
-constexpr unsigned short port = 40;
+constexpr unsigned short defaultPort = 40;
 
 inline bool CommandLineIsMatch(const std::string& arg, const std::string& comp) { return arg == comp; }
 
 int main(int argc, char* argv[]) {
 	try {
-		unsigned short listenPort = port;
-		if (argc >= 3 && (CommandLineIsMatch(argv[1], "--port") || CommandLineIsMatch(argv[1], "-p"))) listenPort = static_cast<unsigned short>(std::stoul(argv[2]));
+		const unsigned short listenPort = (argc >= 3 && (CommandLineIsMatch(argv[1], "--port") || CommandLineIsMatch(argv[1], "-p"))) 
+			? static_cast<unsigned short>(std::stoul(argv[2]))
+			: defaultPort;
 		httplib::Client client("localhost", listenPort);
 		auto res = client.Get("/stop");
 		if (res->status != 200) throw std::runtime_error(res->body);
